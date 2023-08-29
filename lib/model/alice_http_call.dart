@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_alice/model/alice_http_error.dart';
 import 'package:flutter_alice/model/alice_http_request.dart';
 import 'package:flutter_alice/model/alice_http_response.dart';
@@ -48,7 +50,9 @@ class AliceHttpCall {
       if ("Accept-Encoding" == key && "gzip" == value) {
         compressed = true;
       }
-      curlCmd += " -H \'$key: $value\'";
+      if(key.toLowerCase() != 'content-length') {
+        curlCmd += " -H \'$key: $value\'";
+      }
     });
 
     String? requestBody = request?.body.toString();

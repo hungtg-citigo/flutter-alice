@@ -77,13 +77,8 @@ class AliceSaveHelper {
 
   static String _buildOnlyCurl(AliceHttpCall call) {
     StringBuffer stringBuffer = StringBuffer();
-    stringBuffer.write("==============================================\n");
-    stringBuffer.write("Curl\n");
-    stringBuffer.write("--------------------------------------------\n");
     stringBuffer.write("${call.getCurlCommand()}");
-    stringBuffer.write("\n");
-    stringBuffer.write("==============================================\n");
-    stringBuffer.write("\n");
+
     return stringBuffer.toString();
   }
 

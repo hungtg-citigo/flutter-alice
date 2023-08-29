@@ -8,6 +8,7 @@ import 'package:flutter_alice/model/alice_http_call.dart';
 import 'package:flutter_alice/model/alice_http_error.dart';
 import 'package:flutter_alice/model/alice_http_request.dart';
 import 'package:flutter_alice/model/alice_http_response.dart';
+import 'package:flutter_alice/utils/dio_request_option_extension.dart';
 
 class AliceDioInterceptor extends InterceptorsWrapper {
   /// AliceCore instance
@@ -39,42 +40,14 @@ class AliceDioInterceptor extends InterceptorsWrapper {
       call.secure = true;
     }
 
-    AliceHttpRequest request = AliceHttpRequest();
-
-    var data = options.data;
-    if (data == null) {
-      request.size = 0;
-      request.body = "";
-    } else {
-      if (data is FormData) {
-        request.body += "Form data";
-
-        if (data.fields.isNotEmpty == true) {
-          List<AliceFormDataField> fields = [];
-          data.fields.forEach((entry) {
-            fields.add(AliceFormDataField(entry.key, entry.value));
-          });
-          request.formDataFields = fields;
-        }
-        if (data.files.isNotEmpty == true) {
-          List<AliceFormDataFile> files = [];
-          data.files.forEach((entry) {
-            files.add(AliceFormDataFile(entry.value.filename!,
-                entry.value.contentType.toString(), entry.value.length));
-          });
-
-          request.formDataFiles = files;
-        }
-      } else {
-        request.size = utf8.encode(data.toString()).length;
-        request.body = data;
-      }
-    }
+    /// Convert to alice http request
+    AliceHttpRequest request = options.transformAliceHttpRequest();
 
     request.time = DateTime.now();
     request.headers = options.headers;
     request.contentType = options.contentType.toString();
 
+    /// Convert query parameter if need
     if (options.path.contains("?")) {
       final listParameter = options.path.split("?");
 
